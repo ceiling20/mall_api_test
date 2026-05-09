@@ -12,6 +12,18 @@ def test_get_post(base_url,api_client,user_id):
     for post in posts:
          assert post["userId"] == user_id
     logger.info(f"测试通过，找到{len(posts)}条帖子")
+@pytest.mark.parametrize("post_id, expected", [
+    (1, 200),
+    (100, 200),
+    (999, 404),
+])
+def test_get_post_by_id(base_url, api_client, post_id, expected):
+    logger.info(f"开始测试：获取帖子 {post_id}")
+    r = api_client.get(f"{base_url}/posts/{post_id}")
+    assert r.status_code == expected
+    if expected == 200:
+        assert r.json()["id"] == post_id
+    logger.info(f"测试通过，状态码: {r.status_code}")
 def test_get_post_list(base_url,api_client):
     logger.info(f"开始测试，获取帖子列表")
     response = requests.get(f"{base_url}/posts")

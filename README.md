@@ -3,21 +3,29 @@
 
 ##项目结构
 api_test/
-├── conftest.py          # pytest fixture 配置
+├── conftest.py          # pytest fixture 配置(base_url,api_client)
 ├── testcases/           # 测试用例
-│   ├── test_posts.py    # 正常接口测试
+│   ├── test_posts.py    # 正常接口测试(Get/Post/Put/Delete)
 │   └── test_exceptions.py # 异常场景测试
-├── utils/
-│   └── config.py        # 基础配置
-└── report/              # 测试报告输出
+├── utils/(工具层)
+│   └── config.py        # 基础配置(BASE_URL,TIMEOUT)
+│   └── logger.py        # 日志工具
+├── report/              # 测试报告输出
+├── requirements.txt     # 项目依赖
+└── pytest.ini           # pytest 运行配置
+
+##环境要求
+- Python 3.8+
+- pip
 
 ##运行方式
 ```bash
+
 # 安装依赖
-pip install pytest requests pytest-html
+pip install -r requirements.txt
 
 # 运行测试
-pytest testcases/ -v
+pytest
 
-#生成html报告
-pytest testcases/ -v --html=report/report.html
+# 运行指定文件
+pytest testcases/test_posts.py -v
