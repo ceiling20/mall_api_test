@@ -1,4 +1,4 @@
-import requests
+import allure
 import pytest
 from utils.logger import get_logger
 logger = get_logger(__name__)
@@ -24,22 +24,35 @@ def test_get_post_by_id(base_url, api_client, post_id, expected):
     if expected == 200:
         assert r.json()["id"] == post_id
     logger.info(f"测试通过，状态码: {r.status_code}")
+@allure.feature("帖子管理")
+@allure.story("获取帖子列表")
+@allure.severity(allure.severity_level.NORMAL)
 def test_get_post_list(base_url,api_client):
     logger.info(f"开始测试，获取帖子列表")
-    response = requests.get(f"{base_url}/posts")
-    assert response.status_code == 200
-    assert len(response.json()) > 0
+    with allure.step("发送get请求获取所有帖子"):
+        response = api_client.get(f"{base_url}/posts")
+    with allure.step("验证状态码为200"):
+        assert response.status_code == 200
+    with allure.step("验证返回列表不为空"):
+        assert len(response.json()) > 0
     logger.info(f"测试通过，共 {len(response.json())} 条帖子")
+@allure.feature("帖子管理")
+@allure.story("创建新帖子")
+@allure.severity(allure.severity_level.CRITICAL)
 def test_create_post(base_url,api_client):
     logger.info("开始测试：创造帖子")
-    payload = {
-        "title" : "测试标题",
-        "body" : "测试内容",
-        "userid" : "1"
-    }
-    response = requests.post(f"{base_url}/posts",json= payload)
-    assert response.status_code == 201
-    data = response.json()
+    with allure.step("准备请求数据"):
+        payload = {
+            "title" : "测试标题",
+            "body" : "测试内容",
+            "userid" : "1"
+        }
+    with allure.step("发送post请求创建新帖子"):
+        response = api_client.post(f"{base_url}/posts",json= payload)
+    with allure.step("验证返回的状态码为201"):
+        assert response.status_code == 201
+    with allure.step("验证返回数据包含测试标题"):
+        data = response.json()
     assert data["title"] == "测试标题"
     logger.info(f"测试通过，创建帖子 ID: {data.get('id')}")
 def test_update_post(base_url,api_client):
@@ -50,12 +63,12 @@ def test_update_post(base_url,api_client):
         "body" : "更改后内容",
         "userid" : "1"
     }
-    response = requests.put(f"{base_url}/posts/1",json = payload)
+    response = api_client.put(f"{base_url}/posts/1",json = payload)
     assert response.status_code == 200
     assert response.json()["title"] == "更改后标题"
     logger.info("测试通过，帖子已更新")
 def test_delete_post(base_url,api_client):
     logger.info("开始测试：删除帖子")
-    response = requests.delete(f"{base_url}/posts/1")
+    response = api_client.delete(f"{base_url}/posts/1")
     assert response.status_code == 200
     logger.info("测试通过，帖子已删除")

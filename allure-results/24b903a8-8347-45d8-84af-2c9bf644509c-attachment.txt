@@ -1,0 +1,2 @@
+[32mINFO    [0m test_posts:test_posts.py:7 开始测试：获取用户1的帖子
+[32mINFO    [0m test_posts:test_posts.py:14 测试通过，找到10条帖子
