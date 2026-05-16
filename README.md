@@ -41,3 +41,13 @@ pytest
 
 # 查看报告（本地临时服务）
 allure serve allure-results
+## 报告示例
+
+**测试总览（Overview）**  
+![Overview](./docs/allure-screenshots/suites.png)
+
+**按文件和类组织的测试套件（Suites）**  
+![Suites](./docs/allure-screenshots/test_create_post)
+
+**单个用例步骤详情（含 severity 和 step）**  
+![Detail](./docs/allure-screenshots/graphs.png)
