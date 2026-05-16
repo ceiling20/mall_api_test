@@ -29,3 +29,15 @@ pytest
 
 # 运行指定文件
 pytest testcases/test_posts.py -v
+
+## Allure 报告
+
+本项目已集成 Allure 框架，可生成可视化测试报告，按业务模块分组展示，并支持步骤级断言查看。
+
+### 生成报告
+```bash
+# 运行测试并收集数据（已配置在 pytest.ini 中，直接运行 pytest 即可）
+pytest
+
+# 查看报告（本地临时服务）
+allure serve allure-results
