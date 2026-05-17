@@ -51,3 +51,12 @@ https://./docs/allure-screenshots/test_create_post.png
 
 测试严重程度分布 (Graphs)
 https://./docs/allure-screenshots/graphs.png
+
+## 数据驱动测试
+测试数据存放在 `data/test_data.json` 中，
+通过 `@pytest.mark.parametrize` 实现数据与逻辑分离。
+新增测试场景只需修改 JSON 文件，无需改动代码。
+
+运行数据驱动测试：
+```bash
+pytest
