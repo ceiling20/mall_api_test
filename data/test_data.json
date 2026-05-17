@@ -1,0 +1,34 @@
+{
+  "posts" : [
+    {
+      "id" : 1 ,
+      "expected" : 200 ,
+      "description" :  "存在的帖子ID（典型）"
+    },
+    {
+      "id" : 100 ,
+      "expected" : 200,
+      "description" :  "存在的帖子ID（较大）"
+    },
+    {
+      "id" : 999 ,
+      "expected" : 200,
+      "description" :  "不存在的帖子ID"
+    },
+    {
+      "id" : 0 ,
+      "expected" : 404,
+      "description" :  "边界值：ID=0"
+    },
+    {
+      "id" : "abc" ,
+      "expected" : 400,
+      "description" :  "字符串类型ID（预期为400或404）"
+    },
+    {
+      "id" : -1 ,
+      "expected" : 404,
+      "description" :  "负数ID"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+[32mINFO    [0m test_posts:test_posts.py:70 开始测试：更新帖子
+[32mINFO    [0m test_posts:test_posts.py:80 测试通过，帖子已更新

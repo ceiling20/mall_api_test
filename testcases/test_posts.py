@@ -1,17 +1,29 @@
 import allure
 import pytest
+import json
 from utils.logger import get_logger
 logger = get_logger(__name__)
-@pytest.mark.parametrize("user_id",[1,2,3])
-def test_get_post(base_url,api_client,user_id):
-    logger.info(f"开始测试：获取用户{user_id}的帖子")
-    response = api_client.get(f"{base_url}/posts?userId={user_id}")
+with open("data/test_data.json","r",encoding="utf-8")as f:
+    data_test_list = json.load(f)["posts"]
+@allure.feature("帖子管理")
+@allure.story("查询帖子")
+@allure.severity(allure.severity_level.NORMAL)
+@pytest.mark.parametrize("case",data_test_list,
+    ids=[f"{d["id"]}-{d["expected"]}"for d in data_test_list])
+def test_get_post(base_url,api_client,case):
+    post_id = case["id"]
+    expected_status = case["expected"]
+    description = case.get("description", "无描述")
+    logger.info(f"测试场景:{description},测试帖子id:{post_id},测试预测状态码:{expected_status}")
+    with allure.step(f"发送get请求获取帖子{post_id}"):
+        response = api_client.get(f"{base_url}/posts/{post_id}")
     posts = response.json()
-    assert response.status_code == 200
-    assert len(posts) > 0
-    for post in posts:
-         assert post["userId"] == user_id
-    logger.info(f"测试通过，找到{len(posts)}条帖子")
+    with allure.step(f"验证返回状态码为{expected_status}"):
+        assert response.status_code == expected_status,\
+        f"期望状态码{expected_status},实际状态码{response.status_code}"
+    if expected_status == 200:
+        with allure.step("验证预测的id与返回的一致"):
+            assert post_id == posts["id"],"预测的id与返回的不一致"
 @pytest.mark.parametrize("post_id, expected", [
     (1, 200),
     (100, 200),
