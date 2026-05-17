@@ -1,1 +1,0 @@
-[32mINFO    [0m test_posts:test_posts.py:17 测试场景:字符串类型ID（预期为400或404）,测试帖子id:abc,测试预测状态码:expected_status

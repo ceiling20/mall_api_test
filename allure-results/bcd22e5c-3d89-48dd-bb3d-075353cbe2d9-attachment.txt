@@ -1,2 +1,0 @@
-[32mINFO    [0m test_posts:test_posts.py:33 开始测试：获取帖子 1
-[32mINFO    [0m test_posts:test_posts.py:38 测试通过，状态码: 200
