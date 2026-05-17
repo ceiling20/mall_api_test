@@ -1,2 +1,0 @@
-[32mINFO    [0m test_posts:test_posts.py:32 开始测试：获取帖子 999
-[32mINFO    [0m test_posts:test_posts.py:37 测试通过，状态码: 404

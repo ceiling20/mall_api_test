@@ -1,1 +1,0 @@
-[32mINFO    [0m test_posts:test_posts.py:17 测试场景:存在的帖子ID（较大）,测试帖子id:100,测试预测状态码:200

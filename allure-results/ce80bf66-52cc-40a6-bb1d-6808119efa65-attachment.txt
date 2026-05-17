@@ -1,2 +1,0 @@
-[32mINFO    [0m test_posts:test_posts.py:54 开始测试：创造帖子
-[32mINFO    [0m test_posts:test_posts.py:68 测试通过，创建帖子 ID: 101
