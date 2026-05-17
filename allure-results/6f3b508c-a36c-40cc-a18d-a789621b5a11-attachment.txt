@@ -1,0 +1,2 @@
+[32mINFO    [0m test_posts:test_posts.py:82 开始测试：删除帖子
+[32mINFO    [0m test_posts:test_posts.py:85 测试通过，帖子已删除
