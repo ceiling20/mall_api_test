@@ -1,34 +1,86 @@
 {
-  "posts" : [
+  "get_posts" : [
     {
       "id" : 1 ,
       "expected" : 200 ,
-      "description" :  "存在的帖子ID（典型）"
+      "description" :  "数据库中存在，应成功"
     },
     {
-      "id" : 100 ,
+      "id" : 2 ,
       "expected" : 200,
-      "description" :  "存在的帖子ID（较大）"
+      "description" :  "数据库中存在，应成功"
+    },
+    {
+      "id" : 3 ,
+      "expected" : 200,
+      "description" :  "数据库中存在，应成功"
     },
     {
       "id" : 999 ,
-      "expected" : 200,
-      "description" :  "不存在的帖子ID"
+      "expected" : 404,
+      "description" :  "数据库中不存在，预期404"
     },
     {
       "id" : 0 ,
       "expected" : 404,
-      "description" :  "边界值：ID=0"
+      "description" :  "边界值：ID=0，预期404"
     },
     {
       "id" : "abc" ,
-      "expected" : 400,
+      "expected" : [400,404],
       "description" :  "字符串类型ID（预期为400或404）"
     },
     {
       "id" : -1 ,
       "expected" : 404,
       "description" :  "负数ID"
+    }
+  ],
+  "create_posts" : [
+    {
+      "title" : "新标题" ,
+      "body" : "新内容",
+      "userId" : 1,
+      "expected" : 201,
+      "description" :  "正常创建帖子"
+    },
+    {
+      "title" : "" ,
+      "body" : "新内容",
+      "userId" : 1,
+      "expected" : 400,
+      "description" :  "空标题"
+    },
+    {
+      "title" : null ,
+      "body" : "新内容",
+      "userId" : 1,
+      "expected" : 400,
+      "description" :  "标题为null"
+    },
+    {
+      "body" : "新内容",
+      "userId" : 1,
+      "expected" : 400,
+      "description" :  "请求体缺少必要参数"
+    }
+  ],
+  "update_posts" : [
+    {
+      "id": 1,
+      "title" : "更新后标题" ,
+      "body" : "更新后内容",
+      "userId" : 1,
+      "expected" : 200,
+      "description" :  "正常更新帖子"
+    },
+    {
+      "id": 599,
+      "title" : "更新后标题" ,
+      "body" : "更新后内容",
+      "userId" : 1,
+      "expected" : 404,
+      "description" :  "更新不存在"
     }
   ]
 }
