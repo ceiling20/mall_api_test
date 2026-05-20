@@ -60,3 +60,10 @@ https://./docs/allure-screenshots/graphs.png
 运行数据驱动测试：
 ```bash
 pytest
+## 数据库断言
+
+本框架支持接口返回数据与数据库内容的一致性校验。
+通过 `utils/db_helper.py` 中的 `assert_post_matches_api` 函数，
+可快速验证 GET 请求返回的帖子信息与本地 SQLite 数据库中的记录完全一致。
+
+此能力可用于真实业务系统中，确保接口读取的数据与落库数据一致。
