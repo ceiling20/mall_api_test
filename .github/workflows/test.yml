@@ -30,7 +30,8 @@ jobs:
 
       - name: init sqlite database
         run: |
-          python _init_.py
+          python testcases/_init_.py
+          
       - name: run pytest
         run: |
           pytest
