@@ -98,7 +98,7 @@ def test_update_post(base_url,api_client,case):
             "userid" : case["userId"]
         }
     with allure.step("发送put请求更新帖子"):
-        response = api_client.put(f"{base_url}/posts/{case["id"]}",json = payload)
+        response = api_client.put(f"{base_url}/posts/{case['id']}",json = payload)
     with allure.step("验证返回的状态码为{case[expected]}"):
         if case["expected"] == 200:
             assert response.status_code == 200
