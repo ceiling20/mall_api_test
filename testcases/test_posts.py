@@ -10,7 +10,7 @@ with open("data/test_data.json","r",encoding="utf-8")as f:
 @allure.story("查询帖子")
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.parametrize("case",get_data_test,
-    ids=[f"{d["id"]}-{d["expected"]}"for d in get_data_test])
+    ids=[f"{d['id']}-{d['expected']}"for d in get_data_test])
 def test_get_post(base_url,api_client,case):
     post_id = case["id"]
     expected_status = case["expected"]
@@ -62,7 +62,7 @@ with open("data/test_data.json","r",encoding="utf-8") as f:
 @allure.feature("帖子管理")
 @allure.story("创建新帖子")
 @allure.severity(allure.severity_level.CRITICAL)
-@pytest.mark.parametrize("case",create_post_test,ids=(f"{c["expected"]}"for c in create_post_test))
+@pytest.mark.parametrize("case",create_post_test,ids=(f"{c['expected']}"for c in create_post_test))
 def test_create_post(base_url,api_client,case):
     expected_status = case["expected"]
     description = case["description"]
@@ -87,7 +87,7 @@ with open("data/test_data.json","r",encoding="utf-8") as f:
 @allure.feature("帖子管理")
 @allure.story("更新帖子")
 @allure.severity(allure.severity_level.NORMAL)
-@pytest.mark.parametrize("case",update_post_data,ids=(f"{u['id']}-{u["expected"]}"for u in update_post_data))
+@pytest.mark.parametrize("case",update_post_data,ids=(f"{u['id']}-{u['expected']}"for u in update_post_data))
 def test_update_post(base_url,api_client,case):
     logger.info("开始测试：更新帖子")
     with allure.step("构造请求体内容"):
