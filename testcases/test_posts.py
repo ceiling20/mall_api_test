@@ -87,7 +87,7 @@ with open("data/test_data.json","r",encoding="utf-8") as f:
 @allure.feature("帖子管理")
 @allure.story("更新帖子")
 @allure.severity(allure.severity_level.NORMAL)
-@pytest.mark.parametrize("case",update_post_data,ids=(f"{u["id"]}-{u["expected"]}"for u in update_post_data))
+@pytest.mark.parametrize("case",update_post_data,ids=(f"{u['id']}-{u["expected"]}"for u in update_post_data))
 def test_update_post(base_url,api_client,case):
     logger.info("开始测试：更新帖子")
     with allure.step("构造请求体内容"):
