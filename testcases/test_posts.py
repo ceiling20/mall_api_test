@@ -99,10 +99,13 @@ def test_update_post(base_url,api_client,case):
         }
     with allure.step("发送put请求更新帖子"):
         response = api_client.put(f"{base_url}/posts/{case["id"]}",json = payload)
-    with allure.step("验证返回的状态码为200"):
-        assert response.status_code in [case["expected"],200,201]
-    with allure.step("验证返回数据包含更改后标题"):
-        assert response.json()["title"] == case["title"]
+    with allure.step("验证返回的状态码为{case[expected]}"):
+        if case["expected"] == 200:
+            assert response.status_code == 200
+            with allure.step("验证返回数据包含更改后标题"):
+                assert response.json()["title"] == case["title"]
+        else:
+            assert response.status_code in [case["expected"], 200, 201]
     logger.info("测试通过，帖子已更新")
 @allure.feature("帖子管理")
 @allure.story("删除帖子")

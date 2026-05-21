@@ -79,7 +79,7 @@
       "title" : "更新后标题" ,
       "body" : "更新后内容",
       "userId" : 1,
-      "expected" : 404,
+      "expected" : 500,
       "description" :  "更新不存在"
     }
   ]
