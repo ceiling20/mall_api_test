@@ -1,4 +1,6 @@
+import os
 import sqlite3
+os.makedirs("db",exist_ok=True)
 conn = sqlite3.connect("db/test.db")
 cursor = conn.cursor()
 cursor.execute('''
