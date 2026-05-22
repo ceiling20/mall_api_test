@@ -1,6 +1,6 @@
 # api-test 接口自动化项目
 [![Allure Report](https://img.shields.io/badge/Allure-Report-blue)](https://ceiling20.github.io/api-automation-test/)
-![run pytest](https://github.com/ceiling20/api-automation-test/actions/workflows/test.yml/badge.svg)
+[![run pytest](https://github.com/ceiling20/api-automation-test/actions/workflows/test.yml/badge.svg)](https://github.com/ceiling20/api-automation-test/actions/workflows/test.yml)
 ## 项目结构
 
 ```text
