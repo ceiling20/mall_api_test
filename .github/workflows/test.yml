@@ -59,8 +59,23 @@ jobs:
           sudo mv allure-2.29.0 /opt/allure
           sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
 
+      - name: Sample allure-results JSON
+        run: |
+            head -20 allure-results/*-result.json 2>/dev/null | head -50
+
       - name: generate allure report
         run: allure generate allure-results --output allure-report --clean
+
+      - name: Debug allure-report content
+        run: |
+            echo "=== allure-report directory structure ==="
+            ls -la allure-report/
+            echo "=== Check if index.html exists ==="
+            test -f allure-report/index.html && echo "index.html found" || echo "index.html NOT found"
+            echo "=== Check data directory ==="
+            ls -la allure-report/data/ 2>/dev/null || echo "data directory not found"
+            echo "=== Check any JSON files in data ==="
+            find allure-report/data -name "*.json" 2>/dev/null | head -5 || echo "no JSON files"
 
       - name: deploy to github pages
         uses: peaceiris/actions-gh-pages@v3
