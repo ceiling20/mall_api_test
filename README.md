@@ -1,4 +1,5 @@
 # api-test 接口自动化项目
+[![Allure Report](https://img.shields.io/badge/Allure-Report-blue)](https://ceiling20.github.io/api-automation-test/)
 ![run pytest](https://github.com/ceiling20/api-automation-test/actions/workflows/test.yml/badge.svg)
 ## 项目结构
 
@@ -67,6 +68,12 @@ allure serve allure-results
 测试严重程度分布 (Graphs)
 (./docs/allure-screenshots/graphs.png)
 
+### 在线报告
+
+最新的测试报告已部署至 GitHub Pages，可通过以下链接访问：
+
+[https://ceiling20.github.io/api-automation-test/]
+(https://ceiling20.github.io/api-automation-test/)
 ## 数据驱动测试
 测试数据存放在 `data/test_data.json` 中，
 通过 `@pytest.mark.parametrize` 实现数据与逻辑分离。
