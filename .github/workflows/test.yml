@@ -39,9 +39,19 @@ jobs:
         run: |
           pytest
 
+      - name: List allure-results content
+        run: |
+            echo "Current directory: $(pwd)"
+            echo "Contents of allure-results (if exists):"
+            ls -la allure-results/ || echo "allure-results directory not found"
+            if [ -d allure-results ]; then
+              echo "Number of JSON files: $(find allure-results -name '*.json' | wc -l)"
+            fi
+
       - name: install java
         run: |
           sudo apt-get update && sudo apt-get install -y openjdk-11-jre
+
       - name: install allure
         run: |
           wget https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
