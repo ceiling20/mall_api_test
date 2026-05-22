@@ -35,3 +35,17 @@ jobs:
       - name: run pytest
         run: |
           pytest
+
+      - name: install java
+        run: |
+          sudo apt-get update && apt-get install -y openjdk-11-jre
+      - name: install allure
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
+          tar -zxvf allure-2.29.0.tgz
+          sudo mv allure-2.29.0 /opz/allure
+          sudo ln -s /opz/allure/bin/allure /user/local/bin/allure
+
+      - name: generate allure report
+        run: allure generate allure-result --output allure-report --clean
+        
