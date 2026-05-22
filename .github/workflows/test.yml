@@ -43,7 +43,7 @@ jobs:
         run: |
           wget https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
           tar -zxvf allure-2.29.0.tgz
-          sudo mv allure-2.29.0 /opz/allure
+          sudo mv allure-2.29.0 /opt/allure
           sudo ln -s /opz/allure/bin/allure /user/local/bin/allure
 
       - name: generate allure report
