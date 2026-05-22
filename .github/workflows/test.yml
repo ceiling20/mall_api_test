@@ -38,7 +38,7 @@ jobs:
 
       - name: install java
         run: |
-          sudo apt-get update && apt-get install -y openjdk-11-jre
+          sudo apt-get update && sudo apt-get install -y openjdk-11-jre
       - name: install allure
         run: |
           wget https://github.com/allure-framework/allure2/releases/download/2.29.0/allure-2.29.0.tgz
@@ -48,4 +48,4 @@ jobs:
 
       - name: generate allure report
         run: allure generate allure-result --output allure-report --clean
-        
+
