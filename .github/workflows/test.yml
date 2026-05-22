@@ -60,7 +60,7 @@ jobs:
           sudo ln -s /opt/allure/bin/allure /usr/local/bin/allure
 
       - name: generate allure report
-        run: allure generate allure-result --output allure-report --clean
+        run: allure generate allure-results --output allure-report --clean
 
       - name: deploy to github pages
         uses: peaceiris/actions-gh-pages@v3
