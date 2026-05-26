@@ -1,4 +1,4 @@
-name: run pytest
+name: run mall pytest
 on:
   push:
     branches: [main]
@@ -9,7 +9,15 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: 123456
+          MYSQL_DATABASE: mall
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" ==health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: checkout code
         uses: actions/checkout@v4
@@ -31,6 +39,13 @@ jobs:
         run: | 
           pip install -r requirements.txt
 
+      - name: Wait for MySQL
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" -uroot -p123456 --silent;do 
+            sleep 1
+          done
+      - name: Initialize database schema
+        run: mysql -h 127.0.0.1 -uroot -p123456 mall < db/sql/mall.sql
       - name: init sqlite database
         run: |
           python testcases/_init_.py
