@@ -45,7 +45,7 @@ jobs:
             sleep 1
           done
       - name: Initialize database schema
-        run: mysql -h 127.0.0.1 -uroot -p123456 mall < db/sql/mall.sql
+        run: mysql -h 127.0.0.1 -uroot -p123456 mall < sql/mall.sql
 
 
       - name: run pytest
