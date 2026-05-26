@@ -1,0 +1,6 @@
+[32mINFO    [0m test_product:test_product.py:122 开始测试：
+[32mINFO    [0m test_product:test_product.py:134 创建商品响应: {"code":200,"message":"操作成功","data":1}
+[32mINFO    [0m test_product:test_product.py:145 开始更新商品
+[32mINFO    [0m test_product:test_product.py:167 更新商品响应：{"code":401,"message":"暂未登录或token已经过期","data":"Full authentication is required to access this resource"}
+
+[32mINFO    [0m test_product:test_product.py:183 已删除商品 id=340

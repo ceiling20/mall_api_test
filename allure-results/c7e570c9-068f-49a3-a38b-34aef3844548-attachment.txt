@@ -1,0 +1,1 @@
+[32mINFO    [0m test_product:test_product.py:192 开始测试

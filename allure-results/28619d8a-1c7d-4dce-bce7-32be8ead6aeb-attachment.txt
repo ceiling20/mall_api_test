@@ -1,0 +1,5 @@
+[32mINFO    [0m test_product:test_product.py:122 开始测试：
+[32mINFO    [0m test_product:test_product.py:134 创建商品响应: {"code":200,"message":"操作成功","data":1}
+[32mINFO    [0m test_product:test_product.py:145 开始更新商品
+[32mINFO    [0m test_product:test_product.py:167 更新商品响应：{"code":500,"message":"You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'where id = 342' at line 3","data":null}
+[32mINFO    [0m test_product:test_product.py:183 已删除商品 id=342

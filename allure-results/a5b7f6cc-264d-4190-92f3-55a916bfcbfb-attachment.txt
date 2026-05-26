@@ -1,0 +1,3 @@
+[32mINFO    [0m test_product:test_product.py:79 开始测试：
+[32mINFO    [0m test_product:test_product.py:95 创建商品响应: {"code":200,"message":"操作成功","data":1}
+[32mINFO    [0m test_product:test_product.py:110 已删除商品 id=337
