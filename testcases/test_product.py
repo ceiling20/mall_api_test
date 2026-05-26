@@ -184,3 +184,50 @@ def test_update_product_by_sn(auth_client, base_url, case):
 
 with open("data/test_data.json","r",encoding="utf-8")as f:
     delete_data = json.load(f)["delete_product"]
+@allure.feature("商品管理")
+@allure.story("删除商品")
+@allure.severity(allure.severity_level.CRITICAL)
+@pytest.mark.parametrize("case",delete_data,ids=[f"del_test{case['description']}"for case in delete_data])
+def test_delete_product_by_sn(auth_client, base_url,case):
+    logger.info("开始测试")
+    test_sn = f"del_{int(time.time())}"
+    payload = {"name": "创建测试商品",
+               "stock": 500,
+               "price": 5000,
+               "productSn": test_sn}
+    with allure.step("发送post请求创建新商品，验证返回状态码为200"):
+        cre_response = auth_client.post(f"{base_url}/product/create", json=payload)
+        expected = case["expected"]
+        business_code = expected.get("business_code",None)
+        assert cre_response.status_code == expected["http_status"]
+        if business_code is not None:
+            assert cre_response.json()["code"] == business_code
+        if expected['expected_normal']:
+            conn = get_mysql_conn()
+            try:
+                with conn.cursor() as cursor:
+                    cursor.execute("SELECT id FROM pms_product WHERE product_sn = %s", (test_sn,))
+                    row = cursor.fetchone()
+                    assert row is not None, f"未找到 product_sn={test_sn}"
+                    product_id = row["id"]
+            finally:
+                conn.close()
+            delete_url = f"{base_url}/product/update/deleteStatus"
+            delete_resp = auth_client.post(delete_url, params={"ids": product_id, "deleteStatus": 1})
+            print("状态码:", delete_resp.status_code)
+            print("响应内容:", delete_resp.text)
+            assert delete_resp.status_code == 200
+            assert delete_resp.json()["code"] == 200
+            conn = get_mysql_conn()
+            try:
+                with conn.cursor() as cursor:
+                    cursor.execute("SELECT delete_status FROM pms_product WHERE id = %s", (product_id,))
+                    row = cursor.fetchone()
+                    assert row is not None
+                    assert row["delete_status"] == 1, f"商品 {product_id} 的 delete_status 未变为 1"
+            finally:
+                conn.close()
+            with get_mysql_conn() as conn:
+                with conn.cursor() as cursor:
+                    cursor.execute("DELETE FROM pms_product WHERE id = %s", (product_id,))
+                conn.commit()
