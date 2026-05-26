@@ -1,86 +1,186 @@
 {
-  "get_posts" : [
-    {
-      "id" : 1 ,
-      "expected" : 200 ,
-      "description" :  "数据库中存在，应成功"
-    },
-    {
-      "id" : 2 ,
-      "expected" : 200,
-      "description" :  "数据库中存在，应成功"
-    },
-    {
-      "id" : 3 ,
-      "expected" : 200,
-      "description" :  "数据库中存在，应成功"
-    },
-    {
-      "id" : 999 ,
-      "expected" : 404,
-      "description" :  "数据库中不存在，预期404"
-    },
-    {
-      "id" : 0 ,
-      "expected" : 404,
-      "description" :  "边界值：ID=0，预期404"
-    },
-    {
-      "id" : "abc" ,
-      "expected" : [400,404],
-      "description" :  "字符串类型ID（预期为400或404）"
-    },
-    {
-      "id" : -1 ,
-      "expected" : 404,
-      "description" :  "负数ID"
-    }
-  ],
-  "create_posts" : [
-    {
-      "title" : "新标题" ,
-      "body" : "新内容",
-      "userId" : 1,
-      "expected" : 201,
-      "description" :  "正常创建帖子"
-    },
-    {
-      "title" : "" ,
-      "body" : "新内容",
-      "userId" : 1,
-      "expected" : 400,
-      "description" :  "空标题"
-    },
-    {
-      "title" : null ,
-      "body" : "新内容",
-      "userId" : 1,
-      "expected" : 400,
-      "description" :  "标题为null"
-    },
-    {
-      "body" : "新内容",
-      "userId" : 1,
-      "expected" : 400,
-      "description" :  "请求体缺少必要参数"
-    }
-  ],
-  "update_posts" : [
+  "get_product": [
     {
       "id": 1,
-      "title" : "更新后标题" ,
-      "body" : "更新后内容",
-      "userId" : 1,
-      "expected" : 200,
-      "description" :  "正常更新帖子"
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": true,
+        "body": [
+          "id",
+          "name",
+          "price",
+          "stock",
+          "productSn"
+        ]
+      },
+      "description": "数据库中存在"
     },
     {
-      "id": 599,
-      "title" : "更新后标题" ,
-      "body" : "更新后内容",
-      "userId" : 1,
-      "expected" : 500,
-      "description" :  "更新不存在"
+      "id": 99999999999999999,
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": false
+      },
+      "description": "数据库中不存在"
+    },
+    {
+      "id": 0,
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": false
+      },
+      "description": "边界值：ID=0，不存在"
+    },
+    {
+      "id": "abc@",
+      "expected": {
+        "http_status": 400,
+        "business_code": null,
+        "expected_normal": false
+      },
+      "description": "特殊字符（预期为400或404）"
+    },
+    {
+      "id": -1,
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": false
+      },
+      "description": "负数ID"
+    }
+  ],
+  "create_product": [
+    {
+      "body": {
+        "name": "测试产品",
+        "price": "100",
+        "stock": "100"
+      },
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": true
+      },
+      "description": "正常创建商品"
+    },
+    {
+      "body": {
+        "name": " ",
+        "price": "100",
+        "stock": "100"
+      },
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": true
+      },
+      "description": "空商品名称"
+    },
+    {
+      "body": {
+        "name": null,
+        "price": "100",
+        "stock": "100"
+      },
+      "expected": {
+        "http_status": 500,
+        "expected_normal": false
+      },
+      "description": "商品为null"
+    },
+    {
+      "body": {
+        "price": "100",
+        "stock": "100"
+      },
+      "expected": {
+        "http_status": 500,
+        "expected_normal": false
+      },
+      "description": "请求体缺少必要参数"
+    },
+    {
+      "body": {
+        "name": "测试产品",
+        "price": "asdasd",
+        "stock": "100"
+      },
+      "expected": {
+        "http_status": 400,
+        "expected_normal": false
+      },
+      "description": "参数输入错误"
+    }
+  ],
+  "update_product": [
+    {
+      "body": {
+        "name": "更新后商品名称",
+        "price": 200,
+        "stock": 50
+      },
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": true
+      },
+      "description": "正常更新产品"
+    },
+    {
+      "body": {
+        "id": "asdasd",
+        "name": "更新后商品名称",
+        "price": 200,
+        "stock": 50
+      },
+      "expected": {
+        "http_status": 400,
+        "expected_normal": false
+      },
+      "description": "更新不存在"
+    },
+    {
+      "body": {
+        "name": "更新后商品名称",
+        "price": "jhhh",
+        "stock": 50
+      },
+      "expected": {
+        "http_status": 400,
+        "expected_normal": false
+      },
+      "description": "参数输入错误"
+    },
+    {
+      "name": "更新后商品名称",
+      "body": {},
+      "expected": {
+        "http_status": 200,
+        "expected_normal": false
+      },
+      "description": "参数为空"
+    }
+  ],
+  "delete_product": [
+    {
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": true
+      },
+      "description": "正常删除商品"
+    },
+    {
+      "ids": -1,
+      "expected": {
+        "http_status": 200,
+        "expected_normal": false
+      },
+      "description": "删除不存在商品"
     }
   ]
 }
