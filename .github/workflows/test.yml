@@ -39,6 +39,10 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Install MySQL client
+        run: |
+          sudo apt-get update && sudo apt-get install -y mysql-client
+
       - name: Wait for MySQL
         run: |
           while ! mysqladmin ping -h"127.0.0.1" -uroot -p123456 --silent;do 
