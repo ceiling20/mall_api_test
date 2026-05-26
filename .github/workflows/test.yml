@@ -1,9 +1,9 @@
 name: run mall pytest
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -17,7 +17,7 @@ jobs:
           MYSQL_DATABASE: mall
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" ==health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: checkout code
         uses: actions/checkout@v4
@@ -31,12 +31,12 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('api_test/requirement.txt')}}
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirement.txt')}}
           restore-keys: |
             ${{runner.os}}-pip
 
       - name: install dependencies
-        run: | 
+        run: |
           pip install -r requirements.txt
 
       - name: Wait for MySQL
@@ -46,22 +46,20 @@ jobs:
           done
       - name: Initialize database schema
         run: mysql -h 127.0.0.1 -uroot -p123456 mall < db/sql/mall.sql
-      - name: init sqlite database
-        run: |
-          python testcases/_init_.py
-          
+
+
       - name: run pytest
         run: |
           pytest
 
       - name: List allure-results content
         run: |
-            echo "Current directory: $(pwd)"
-            echo "Contents of allure-results (if exists):"
-            ls -la allure-results/ || echo "allure-results directory not found"
-            if [ -d allure-results ]; then
-              echo "Number of JSON files: $(find allure-results -name '*.json' | wc -l)"
-            fi
+          echo "Current directory: $(pwd)"
+          echo "Contents of allure-results (if exists):"
+          ls -la allure-results/ || echo "allure-results directory not found"
+          if [ -d allure-results ]; then
+            echo "Number of JSON files: $(find allure-results -name '*.json' | wc -l)"
+          fi
 
       - name: install java
         run: |
@@ -76,24 +74,24 @@ jobs:
 
       - name: Sample allure-results JSON
         run: |
-            head -20 allure-results/*-result.json 2>/dev/null | head -50
+          head -20 allure-results/*-result.json 2>/dev/null | head -50
 
       - name: generate allure report
         run: allure generate allure-results --output allure-report --clean
 
       - name: Debug allure-report content
         run: |
-            echo "=== allure-report directory structure ==="
-            ls -la allure-report/
-            echo "=== Check if index.html exists ==="
-            test -f allure-report/index.html && echo "index.html found" || echo "index.html NOT found"
-            echo "=== Check data directory ==="
-            ls -la allure-report/data/ 2>/dev/null || echo "data directory not found"
-            echo "=== Check any JSON files in data ==="
-            find allure-report/data -name "*.json" 2>/dev/null | head -5 || echo "no JSON files"
+          echo "=== allure-report directory structure ==="
+          ls -la allure-report/
+          echo "=== Check if index.html exists ==="
+          test -f allure-report/index.html && echo "index.html found" || echo "index.html NOT found"
+          echo "=== Check data directory ==="
+          ls -la allure-report/data/ 2>/dev/null || echo "data directory not found"
+          echo "=== Check any JSON files in data ==="
+          find allure-report/data -name "*.json" 2>/dev/null | head -5 || echo "no JSON files"
 
       - name: deploy to github pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{secrets.GITHUB_TOKEN}}
           publish_dir: allure-report
