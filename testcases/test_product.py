@@ -36,7 +36,7 @@ def test_get_product_list(auth_client, base_url):
         logger.info("商品列表查询测试通过")
 
 
-with open("data/test_data.json", "r", encoding="utf-8") as s:
+with open("data/test_product_data.json", "r", encoding="utf-8") as s:
     get_product_data_list = json.load(s)["get_product"]
 
 
@@ -66,7 +66,7 @@ def test_get_product(auth_client, base_url, case):
                 assert product is None
 
 
-with open("data/test_data.json", "r", encoding="utf-8") as f:
+with open("data/test_product_data.json", "r", encoding="utf-8") as f:
     create_product_data = json.load(f)["create_product"]
 
 
@@ -79,8 +79,8 @@ def test_create_product_by_sn(auth_client, base_url, case):
     logger.info("开始测试：")
     test_sn = f"cre_{int(time.time())}"
     body = case["body"]
-    payload = {"price": body["price"],
-               "stock": body["stock"],
+    payload = {"price": body.get("price",{}),
+               "stock": body.get("stock",{}),
                "productSn": test_sn}
     if "name" in body:
         payload["name"] = body["name"]
@@ -105,12 +105,12 @@ def test_create_product_by_sn(auth_client, base_url, case):
                     product_id = row["id"]
             finally:
                 conn.close()
-            with allure.step("清理测试商品"):
-                sql_delete_product_by_sn(test_sn)
-                logger.info(f"已删除商品 id={product_id}")
+    with allure.step("清理测试商品"):
+        sql_delete_product_by_sn(test_sn)
+        logger.info(f"已删除测试商品 productSn={test_sn}")
 
 
-with open("data/test_data.json", "r", encoding="utf-8") as f:
+with open("data/test_product_data.json", "r", encoding="utf-8") as f:
     update_data = json.load(f)["update_product"]
 
 
@@ -123,8 +123,8 @@ def test_update_product_by_sn(auth_client, base_url, case):
     test_sn = f"update_{int(time.time())}"
     unique_name = f"测试商品{int(time.time())}"
     payload = {"name": unique_name,
-               "price": 99,
-               "stock": 100,
+               "price": 456456,
+               "stock": 745,
                "productSn": test_sn}
     with allure.step("发送post请求创建商品，验证返回状态码为200"):
         cre_response = auth_client.post(f"{base_url}/product/create", json=payload)
@@ -174,15 +174,15 @@ def test_update_product_by_sn(auth_client, base_url, case):
                         row = cursor.fetchone()
                         assert row is not None
                         assert row["name"] == body.get("name")
-                        assert float(row["price"]) == body.get("price")
+                        assert row["price"] == body.get("price")
                         assert row["stock"] == body.get("stock")
                 finally:
                     conn.close()
     with allure.step("清理测试商品"):
         sql_delete_product_by_sn(test_sn)
-        logger.info(f"已删除商品 id={product_id}")
+        logger.info(f"已删除测试商品 productSn={test_sn}")
 
-with open("data/test_data.json","r",encoding="utf-8")as f:
+with open("data/test_product_data.json","r",encoding="utf-8")as f:
     delete_data = json.load(f)["delete_product"]
 @allure.feature("商品管理")
 @allure.story("删除商品")
@@ -190,8 +190,9 @@ with open("data/test_data.json","r",encoding="utf-8")as f:
 @pytest.mark.parametrize("case",delete_data,ids=[f"del_test{case['description']}"for case in delete_data])
 def test_delete_product_by_sn(auth_client, base_url,case):
     logger.info("开始测试")
+    test_name = f"测试商品{int(time.time())}"
     test_sn = f"del_{int(time.time())}"
-    payload = {"name": "创建测试商品",
+    payload = {"name": test_name,
                "stock": 500,
                "price": 5000,
                "productSn": test_sn}
@@ -227,7 +228,6 @@ def test_delete_product_by_sn(auth_client, base_url,case):
                     assert row["delete_status"] == 1, f"商品 {product_id} 的 delete_status 未变为 1"
             finally:
                 conn.close()
-            with get_mysql_conn() as conn:
-                with conn.cursor() as cursor:
-                    cursor.execute("DELETE FROM pms_product WHERE id = %s", (product_id,))
-                conn.commit()
+        with allure.step("清理测试商品"):
+            sql_delete_product_by_sn(test_sn)
+            logger.info(f"已删除测试商品 productSn={test_sn}")

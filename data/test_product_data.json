@@ -5,14 +5,7 @@
       "expected": {
         "http_status": 200,
         "business_code": 200,
-        "expected_normal": true,
-        "body": [
-          "id",
-          "name",
-          "price",
-          "stock",
-          "productSn"
-        ]
+        "expected_normal": true
       },
       "description": "数据库中存在"
     },
@@ -56,7 +49,7 @@
   "create_product": [
     {
       "body": {
-        "name": "测试产品",
+        "name": "测试商品",
         "price": "100",
         "stock": "100"
       },
@@ -105,7 +98,7 @@
     },
     {
       "body": {
-        "name": "测试产品",
+        "name": "测试商品",
         "price": "asdasd",
         "stock": "100"
       },
@@ -119,16 +112,16 @@
   "update_product": [
     {
       "body": {
-        "name": "更新后商品名称",
-        "price": 200,
-        "stock": 50
+        "name": "测试商品",
+        "price": 54645,
+        "stock": 100
       },
       "expected": {
         "http_status": 200,
         "business_code": 200,
         "expected_normal": true
       },
-      "description": "正常更新产品"
+      "description": "正常更新商品"
     },
     {
       "body": {

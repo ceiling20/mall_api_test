@@ -1,0 +1,145 @@
+{
+  "get_brand": [
+    {
+      "id": 1,
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": true
+      },
+      "description": "数据库中存在"
+    },
+    {
+      "id": 99999999999999999,
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": false
+      },
+      "description": "数据库中不存在"
+    },
+    {
+      "id": 0,
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": false
+      },
+      "description": "边界值：ID=0，不存在"
+    },
+    {
+      "id": "abc@",
+      "expected": {
+        "http_status": 400,
+        "business_code": null,
+        "expected_normal": false
+      },
+      "description": "特殊字符（预期为400或404）"
+    },
+    {
+      "id": -1,
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": false
+      },
+      "description": "负数ID"
+    }
+  ],
+  "create_brand": [
+    {
+      "body": {
+        "logo": "100"
+      },
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": true
+      },
+      "description": "正常创建品牌"
+    },
+    {
+      "body": {
+        "logo": " "
+      },
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": false
+      },
+      "description": "空品牌名称"
+    },
+    {
+      "body": {
+        "logo": null
+      },
+      "expected": {
+        "http_status": 200,
+        "business_code": 404,
+        "expected_normal": false
+      },
+      "description": "品牌logo为null"
+    },
+    {
+      "body": {
+      },
+      "expected": {
+        "http_status": 200,
+        "business_code": 404,
+        "expected_normal": false
+      },
+      "description": "请求体缺少必要参数"
+    }
+  ],
+  "update_brand": [
+    {
+      "body": {
+        "logo": "100"
+      },
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": true
+      },
+      "description": "正常更新品牌"
+    },
+    {
+      "body": {
+        "id" : -1,
+        "logo": "100"
+      },
+      "expected": {
+        "http_status": 200,
+        "expected_normal": false
+      },
+      "description": "更新不存在"
+    },
+    {
+      "name": "更新后品牌名称",
+      "body": {},
+      "expected": {
+        "http_status": 200,
+        "expected_normal": false
+      },
+      "description": "参数为空"
+    }
+  ],
+  "delete_brand": [
+    {
+      "expected": {
+        "http_status": 200,
+        "business_code": 200,
+        "expected_normal": true
+      },
+      "description": "正常删除品牌"
+    },
+    {
+      "id": -1,
+      "expected": {
+        "http_status": 200,
+        "expected_normal": false
+      },
+      "description": "删除不存在品牌"
+    }
+  ]
+}
