@@ -1,2 +1,0 @@
-INFO     test_brand:test_brand.py:196 开始测试
-INFO     test_brand:test_brand.py:242 已删除测试品牌 name=del_1780210727

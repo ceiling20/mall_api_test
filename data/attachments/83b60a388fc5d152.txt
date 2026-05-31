@@ -1,0 +1,2 @@
+INFO     test_product:test_product.py:188 开始测试
+INFO     test_product:test_product.py:239 已删除测试商品 productSn=del_1780215938
