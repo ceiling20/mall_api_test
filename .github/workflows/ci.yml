@@ -25,19 +25,6 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
-      mall-admin:
-        image: ghcr.io/ceiling20/mall-admin:1.0-SNAPSHOT
-
-        ports:
-          - 8080:8080
-        env:
-          spring.datasource.url: jdbc:mysql://mysql:3306/mall?useSSL=false
-          spring.datasource.username: root
-          spring.datasource.password: 123456
-        options: >-
-          --health-interval=30s
-          --health-timeout=10s
-          --health-retries=10
 
     steps:
       - name: Checkout code
@@ -62,6 +49,20 @@ jobs:
 
       - name: Initialize database schema
         run: mysql -h 127.0.0.1 -uroot -p123456 mall < sql/mall.sql
+
+      - name: Start mall-admin
+        run: |
+          docker run -d --name mall-admin --network host \
+            -e spring.datasource.url=jdbc:mysql://localhost:3306/mall?useSSL=false \
+            -e spring.datasource.username=root \
+            -e spring.datasource.password=123456 \
+            ghcr.io/ceiling20/mall-admin:1.0-SNAPSHOT
+
+      - name: Wait for mall-admin
+        run: |
+          while ! curl -s -f http://localhost:8080/actuator/health; do
+            sleep 5
+          done
 
       - name: Run tests
         run: pytest testcases/ -v
