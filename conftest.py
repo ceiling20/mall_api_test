@@ -71,7 +71,7 @@ def auth_client(auth_token):
 def portal_token(portal_base_url, unauth_client):
     """portal 模块的会员 token，需要先注册一个测试会员"""
     auth_url = f"{portal_base_url}/sso/login"
-    params={"username": "admin", "password": "macro123"}
+    params={"username": "test", "password": "test"}
     response = unauth_client.post(auth_url,params=params)
     print("\n===== Portal 登录调试 =====")
     print("状态码:", response.status_code)
