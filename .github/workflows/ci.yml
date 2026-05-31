@@ -37,6 +37,10 @@ jobs:
 
       rabbitmq:
         image: rabbitmq:3.9.11-management
+        env:
+          RABBITMQ_DEFAULT_USER: mall
+          RABBITMQ_DEFAULT_PASS: mall
+          RABBITMQ_DEFAULT_VHOST: /mall
         ports:
           - 5672:5672
           - 15672:15672
