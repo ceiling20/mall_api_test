@@ -2,7 +2,7 @@ import allure
 import time
 import pytest
 import json
-from utils.db_helper import get_mysql_conn, sql_delete_brand_by_name
+from utils.db_helper import sql_delete_brand_by_name
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -11,10 +11,10 @@ logger = get_logger(__name__)
 @allure.feature("品牌管理")
 @allure.story("查询品牌列表")
 @allure.severity(allure.severity_level.NORMAL)
-def test_get_brand_list(auth_client, base_url):
+def test_get_brand_list(auth_client, admin_base_url):
     logger.info("开始测试")
     with allure.step("发送get请求，验证响应码正确"):
-        response = auth_client.get(f"{base_url}/brand/list", params={"pageNum": 1, "pageSize": 5})
+        response = auth_client.get(f"{admin_base_url}/brand/list", params={"pageNum": 1, "pageSize": 5})
     logger.info(f"响应码为:{response.status_code}")
     logger.info(f"响应内容:{response.text}")
     assert response.status_code == 200
@@ -42,17 +42,21 @@ with open("data/test_brand_data.json", "r", encoding="utf-8") as s:
 @allure.story("查询品牌")
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.parametrize("case", get_brand_data_list, ids=[f"test_{c['id']}" for c in get_brand_data_list])
-def test_get_brand(auth_client, base_url, case):
+def test_get_brand(auth_client, admin_base_url, case):
     logger.info("开始测试")
     with allure.step("发送get请求查询品牌，验证响应码是否正确"):
-        response = auth_client.get(f"{base_url}/brand/{case['id']}")
+        response = auth_client.get(f"{admin_base_url}/brand/{case['id']}")
     logger.info(f"响应码：{response.status_code}")
     logger.info(f"响应内容:{response.text}")
     data = response.json()
     expected = case["expected"]
     assert response.status_code == case["expected"]["http_status"]
-    if expected["business_code"] is not None:
+    if "business_code" in expected:
         assert data["code"] == case["expected"]["business_code"]
+    if "data" in expected:
+        assert data["data"] == expected["data"]
+    if "message" in expected:
+        assert data["message"] == expected["message"]
     brand = data["data"]
     with allure.step("预测数据是否为空，有数据的话，测试响应体主要参数是否存在"):
         if expected["expected_normal"]:
@@ -73,38 +77,43 @@ with open("data/test_brand_data.json", "r", encoding="utf-8") as f:
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.parametrize("case", create_brand_data,
                          ids=[f"cre_test{case['description']}" for case in create_brand_data])
-def test_create_brand_by_name(auth_client, base_url, case):
+def test_create_brand_by_name(auth_client, admin_base_url, case, db_conn):
     logger.info("开始测试：")
     test_name = f"cre_{int(time.time())}"
     body = case["body"]
-    payload = {"name": test_name,
-               "logo": body.get("logo")
+    if body:
+        payload = {"name": test_name,
                }
-    if "name" in body:
-        payload["name"] = body["name"]
+        if "logo" in body:
+            payload["logo"] = body.get("logo")
+    else :
+        payload = {}
     with allure.step("发送post请求创建品牌，验证返回状态码为200"):
-        cre_response = auth_client.post(f"{base_url}/brand/create", json=payload)
+        cre_response = auth_client.post(f"{admin_base_url}/brand/create", json=payload)
         expected = case["expected"]
         business_code = expected.get("business_code")
         create_data = cre_response.json()
         assert cre_response.status_code == expected["http_status"]
-        if business_code is not None:
-            assert create_data["code"] == expected["business_code"]
+        if "business_code" in expected:
+            assert create_data["code"] == business_code
+        if "data" in expected:
+            assert create_data["data"] == expected["data"]
+        if "message" in expected:
+            if isinstance(expected["message"], list):
+                assert create_data["message"] in expected["message"]
+            else:
+                assert create_data["message"] == expected["message"]
         logger.info(f"创建品牌响应: {cre_response.text}")
         if expected["expected_normal"]:
             with allure.step("数据库断言验证："):
-                conn = get_mysql_conn()
-            try:
-                with conn.cursor() as cursor:
+                with db_conn.cursor() as cursor:
                     cursor.execute("SELECT id,logo FROM pms_brand WHERE name = %s", (test_name,))
                     row = cursor.fetchone()
                     assert row is not None, f"未找到brand_name={test_name}"
                     assert body["logo"] in row["logo"]
                     brand_id = row["id"]
-            finally:
-                conn.close()
     with allure.step("清理测试品牌"):
-        sql_delete_brand_by_name(test_name)
+        sql_delete_brand_by_name(test_name, db_conn)
         logger.info(f"已删除测试品牌 name={test_name}")
 
 
@@ -116,28 +125,23 @@ with open("data/test_brand_data.json", "r", encoding="utf-8") as f:
 @allure.story("更新品牌")
 @allure.severity(allure.severity_level.NORMAL)
 @pytest.mark.parametrize("case", update_data, ids=[f"upd_test{case['description']}" for case in update_data])
-def test_update_brand_by_name(auth_client, base_url, case):
+def test_update_brand_by_name(auth_client, admin_base_url, case, db_conn):
     logger.info("开始测试：")
     test_name = f"cre_{int(time.time())}"
-    body = case["body"]
     payload = {"name": test_name,
                "logo": 8676 }
     with allure.step("发送post请求创建品牌，验证返回状态码为200"):
-        cre_response = auth_client.post(f"{base_url}/brand/create", json=payload)
+        cre_response = auth_client.post(f"{admin_base_url}/brand/create", json=payload)
         assert cre_response.status_code == 200
         create_data = cre_response.json()
         assert create_data["code"] == 200
         logger.info(f"创建品牌响应: {cre_response.text}")
     with allure.step("数据库断言验证："):
-        conn = get_mysql_conn()
-        try:
-            with conn.cursor() as cursor:
-                cursor.execute("SELECT id FROM pms_brand WHERE name = %s", (test_name,))
-                row = cursor.fetchone()
-                assert row is not None, f"未找到brand_name={test_name}"
-                brand_id = row["id"]
-        finally:
-            conn.close()
+        with db_conn.cursor() as cursor:
+            cursor.execute("SELECT id FROM pms_brand WHERE name = %s", (test_name,))
+            row = cursor.fetchone()
+            assert row is not None, f"未找到brand_name={test_name}"
+            brand_id = row["id"]
     logger.info("开始更新品牌")
     body = case.get("body")
     expected = case["expected"]
@@ -155,25 +159,28 @@ def test_update_brand_by_name(auth_client, base_url, case):
             "id": u_id,
         }
     with allure.step(f"发送post请求更新品牌，验证返回状态码为200，更新品牌id：{u_id}", ):
-        upd_response = auth_client.post(f"{base_url}/brand/update/{u_id}", json=update_payload)
+        upd_response = auth_client.post(f"{admin_base_url}/brand/update/{u_id}", json=update_payload)
         assert upd_response.status_code == expected["http_status"]
-        if business_code is not None:
+        if "business_code" in expected:
             assert upd_response.json()["code"] == business_code
+        if "data" in expected:
+            assert upd_response.json()["data"] == expected["data"]
+        if "message" in expected:
+            if isinstance(expected["message"], list):
+                assert upd_response.json()["message"] in expected["message"]
+            else:
+                assert upd_response.json()["message"] == expected["message"]
         logger.info(f"更新品牌响应：{upd_response.text}")
         if expected["expected_normal"]:
             with allure.step("验证数据库中品牌信息已更新"):
-                conn = get_mysql_conn()
-                try:
-                    with conn.cursor() as cursor:
-                        cursor.execute("SELECT name,logo FROM pms_brand WHERE id = %s", (brand_id,))
-                        row = cursor.fetchone()
-                        assert row is not None
-                        assert row["name"] == test_name
-                        assert row["logo"] == body.get("logo")
-                finally:
-                    conn.close()
+                with db_conn.cursor() as cursor:
+                    cursor.execute("SELECT name,logo FROM pms_brand WHERE id = %s", (brand_id,))
+                    row = cursor.fetchone()
+                    assert row is not None
+                    assert row["name"] == test_name
+                    assert row["logo"] == body.get("logo")
     with allure.step("清理测试品牌"):
-        sql_delete_brand_by_name(test_name)
+        sql_delete_brand_by_name(test_name, db_conn)
         logger.info(f"已删除测试品牌 name={test_name}")
 
 
@@ -185,41 +192,51 @@ with open("data/test_brand_data.json", "r", encoding="utf-8") as f:
 @allure.story("删除品牌")
 @allure.severity(allure.severity_level.CRITICAL)
 @pytest.mark.parametrize("case", delete_data, ids=[f"del_test{case['description']}" for case in delete_data])
-def test_delete_brand_by_name(auth_client, base_url, case):
+def test_delete_brand_by_name(auth_client, admin_base_url, case, db_conn):
     logger.info("开始测试")
-    test_name = f"del_{int(time.time())}"
-    payload = {"name": test_name,
-               "logo": 500}
-    with allure.step("发送post请求创建新品牌，验证返回状态码为200"):
-        cre_response = auth_client.post(f"{base_url}/brand/create", json=payload)
-        expected = case["expected"]
-        business_code = expected.get("business_code", None)
-        assert cre_response.status_code == expected["http_status"]
-        if business_code is not None:
-            assert cre_response.json()["code"] == business_code
+    expected = case["expected"]
+    if "ids" in case:
+        brand_id = case["ids"]
+    else:
+        test_name = f"del_{int(time.time())}"
+        payload = {"name": test_name,
+                   "logo": 500}
+        with allure.step("发送post请求创建新品牌"):
+            cre_response = auth_client.post(f"{admin_base_url}/brand/create", json=payload)
+            assert cre_response.status_code == expected["http_status"]
+            if "business_code" in expected:
+                assert cre_response.json()["code"] == expected["business_code"]
+            if "data" in expected:
+                assert cre_response.json()["data"] == expected["data"]
+            if "message" in expected:
+                assert cre_response.json()["message"] == expected["message"]
         if expected['expected_normal']:
-            conn = get_mysql_conn()
-            try:
-                with conn.cursor() as cursor:
-                    cursor.execute("SELECT id FROM pms_brand WHERE name = %s", (test_name,))
-                    row = cursor.fetchone()
-                    assert row is not None, f"未找到 brand_name={test_name}"
-                    brand_id = row["id"]
-            finally:
-                conn.close()
-            delete_resp = auth_client.get(f"{base_url}/brand/delete/{brand_id}")
+            with db_conn.cursor() as cursor:
+                cursor.execute("SELECT id FROM pms_brand WHERE name = %s", (test_name,))
+                row = cursor.fetchone()
+                assert row is not None, f"未找到 brand_name={test_name}"
+                brand_id = row["id"]
+    if "ids" in case or expected['expected_normal']:
+        with allure.step("发送删除请求"):
+            delete_resp = auth_client.get(f"{admin_base_url}/brand/delete/{brand_id}")
             print("状态码:", delete_resp.status_code)
             print("响应内容:", delete_resp.text)
-            assert delete_resp.status_code == 200
-            assert delete_resp.json()["code"] == 200
-            conn = get_mysql_conn()
-            try:
-                with conn.cursor() as cursor:
+            if "ids" in case:
+                assert delete_resp.status_code == expected["http_status"]
+                if "business_code" in expected:
+                    assert delete_resp.json()["code"] == expected["business_code"]
+                if "message" in expected:
+                    assert delete_resp.json()["message"] == expected["message"]
+                if "data" in expected:
+                    assert delete_resp.json()["data"] == expected["data"]
+            else:
+                assert delete_resp.status_code == 200
+                assert delete_resp.json()["code"] == 200
+                with db_conn.cursor() as cursor:
                     cursor.execute("SELECT id FROM pms_brand WHERE id = %s", (brand_id,))
                     row = cursor.fetchone()
                     assert row is None
-            finally:
-                conn.close()
-    with allure.step("清理测试品牌"):
-        sql_delete_brand_by_name(test_name)
-        logger.info(f"已删除测试品牌 name={test_name}")
+    if "ids" not in case:
+        with allure.step("清理测试品牌"):
+            sql_delete_brand_by_name(test_name, db_conn)
+            logger.info(f"已删除测试品牌 name={test_name}")

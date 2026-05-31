@@ -1,5 +1,6 @@
 import os
-BASE_URL = os.getenv("BASE_URL","http://localhost:8080")
+BASE_URL_ADMIN = os.getenv("BASE_URL","http://localhost:8080")
+BASE_URL_PORTAL = os.getenv("BASE_URL","http://localhost:8085")
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "123456")   # 改成你 mall 数据库的密码

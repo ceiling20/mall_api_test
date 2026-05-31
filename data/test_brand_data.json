@@ -5,7 +5,8 @@
       "expected": {
         "http_status": 200,
         "business_code": 200,
-        "expected_normal": true
+        "expected_normal": true,
+        "message": "操作成功"
       },
       "description": "数据库中存在"
     },
@@ -14,7 +15,9 @@
       "expected": {
         "http_status": 200,
         "business_code": 200,
-        "expected_normal": false
+        "expected_normal": false,
+        "message": "操作成功",
+        "data": null
       },
       "description": "数据库中不存在"
     },
@@ -23,7 +26,9 @@
       "expected": {
         "http_status": 200,
         "business_code": 200,
-        "expected_normal": false
+        "expected_normal": false,
+        "message": "操作成功",
+        "data": null
       },
       "description": "边界值：ID=0，不存在"
     },
@@ -31,8 +36,10 @@
       "id": "abc@",
       "expected": {
         "http_status": 400,
-        "business_code": null,
-        "expected_normal": false
+        "business_code": 401,
+        "expected_normal": false,
+        "message": "暂未登录或token已经过期",
+        "data": "Full authentication is required to access this resource"
       },
       "description": "特殊字符（预期为400或404）"
     },
@@ -41,7 +48,9 @@
       "expected": {
         "http_status": 200,
         "business_code": 200,
-        "expected_normal": false
+        "expected_normal": false,
+        "message": "操作成功",
+        "data": null
       },
       "description": "负数ID"
     }
@@ -54,18 +63,22 @@
       "expected": {
         "http_status": 200,
         "business_code": 200,
-        "expected_normal": true
+        "expected_normal": true,
+        "message": "操作成功",
+        "data": 1
       },
       "description": "正常创建品牌"
     },
     {
       "body": {
-        "logo": " "
+        "logo": ""
       },
       "expected": {
         "http_status": 200,
-        "business_code": 200,
-        "expected_normal": false
+        "business_code": 404,
+        "expected_normal": false,
+        "message": "logo不能为空",
+        "data": null
       },
       "description": "空品牌名称"
     },
@@ -76,17 +89,20 @@
       "expected": {
         "http_status": 200,
         "business_code": 404,
-        "expected_normal": false
+        "expected_normal": false,
+        "message": "logo不能为空",
+        "data": null
       },
       "description": "品牌logo为null"
     },
     {
-      "body": {
-      },
+      "body": {},
       "expected": {
         "http_status": 200,
         "business_code": 404,
-        "expected_normal": false
+        "expected_normal": false,
+        "message": ["name不能为空", "logo不能为空"],
+        "data": null
       },
       "description": "请求体缺少必要参数"
     }
@@ -99,7 +115,9 @@
       "expected": {
         "http_status": 200,
         "business_code": 200,
-        "expected_normal": true
+        "expected_normal": true,
+        "message": "操作成功",
+        "data": 1
       },
       "description": "正常更新品牌"
     },
@@ -110,7 +128,10 @@
       },
       "expected": {
         "http_status": 200,
-        "expected_normal": false
+        "business_code": 500,
+        "expected_normal": false,
+        "message": "操作失败",
+        "data": null
       },
       "description": "更新不存在"
     },
@@ -119,7 +140,10 @@
       "body": {},
       "expected": {
         "http_status": 200,
-        "expected_normal": false
+        "business_code": 404,
+        "expected_normal": false,
+        "message": ["name不能为空", "logo不能为空"],
+        "data": null
       },
       "description": "参数为空"
     }
@@ -129,15 +153,20 @@
       "expected": {
         "http_status": 200,
         "business_code": 200,
-        "expected_normal": true
+        "expected_normal": true,
+        "message": "操作成功",
+        "data": 1
       },
       "description": "正常删除品牌"
     },
     {
-      "id": -1,
+      "ids": -1,
       "expected": {
         "http_status": 200,
-        "expected_normal": false
+        "business_code": 500,
+        "expected_normal": false,
+        "message": "操作失败",
+        "data": null
       },
       "description": "删除不存在品牌"
     }
