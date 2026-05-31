@@ -1,0 +1,6 @@
+INFO     test_product:test_product.py:122 开始测试：
+INFO     test_product:test_product.py:134 创建商品响应: {"code":200,"message":"操作成功","data":1}
+INFO     test_product:test_product.py:141 开始更新商品
+INFO     test_product:test_product.py:167 更新商品响应：{"code":401,"message":"暂未登录或token已经过期","data":"Full authentication is required to access this resource"}
+
+INFO     test_product:test_product.py:179 已删除测试商品 productSn=update_1780210729

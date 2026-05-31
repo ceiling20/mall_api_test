@@ -1,0 +1,5 @@
+INFO     test_brand:test_brand.py:129 开始测试：
+INFO     test_brand:test_brand.py:138 创建品牌响应: {"code":200,"message":"操作成功","data":1}
+INFO     test_brand:test_brand.py:145 开始更新品牌
+INFO     test_brand:test_brand.py:173 更新品牌响应：{"code":500,"message":"操作失败","data":null}
+INFO     test_brand:test_brand.py:184 已删除测试品牌 name=cre_1780210727
