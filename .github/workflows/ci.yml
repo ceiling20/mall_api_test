@@ -25,6 +25,26 @@ jobs:
           --health-timeout=5s
           --health-retries=3
 
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+
+      mongo:
+        image: mongo:4
+        ports:
+          - 27017:27017
+
+      rabbitmq:
+        image: rabbitmq:3.9.11-management
+        ports:
+          - 5672:5672
+          - 15672:15672
+        options: >-
+          --health-cmd="rabbitmq-diagnostics -q ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
 
     steps:
       - name: Checkout code
@@ -56,7 +76,7 @@ jobs:
             -e spring.datasource.url=jdbc:mysql://localhost:3306/mall?useSSL=false \
             -e spring.datasource.username=root \
             -e spring.datasource.password=123456 \
-            -e JAVA_TOOL_OPTIONS="-XX:-UseContainerSupport" \
+            -e JAVA_TOOL_OPTIONS="-XX:-UseContainerSupport -Duser.language=zh -Duser.region=CN" \
             ghcr.io/ceiling20/mall-admin:1.0-SNAPSHOT
           sleep 30
 
@@ -75,6 +95,33 @@ jobs:
           done
           echo "FAILED. Full logs:"
           docker logs mall-admin
+          exit 1
+
+      - name: Start mall-portal
+        run: |
+          docker run -d --name mall-portal --network host \
+            -e spring.datasource.url=jdbc:mysql://localhost:3306/mall?useSSL=false \
+            -e spring.datasource.username=root \
+            -e spring.datasource.password=123456 \
+            -e JAVA_TOOL_OPTIONS="-XX:-UseContainerSupport -Duser.language=zh -Duser.region=CN" \
+            ghcr.io/ceiling20/mall-portal:1.0-SNAPSHOT
+          sleep 30
+
+      - name: Check mall-portal logs
+        run: docker logs mall-portal
+
+      - name: Wait for mall-portal
+        run: |
+          for i in $(seq 1 30); do
+            if curl -s http://localhost:8085/actuator/health > /dev/null; then
+              echo "mall-portal is ready"
+              exit 0
+            fi
+            echo "[$i/30] Waiting portal... $(docker inspect mall-portal --format='{{.State.Health.Status}}' 2>/dev/null)"
+            sleep 10
+          done
+          echo "FAILED. Full logs:"
+          docker logs mall-portal
           exit 1
 
       - name: Run tests
