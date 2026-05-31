@@ -27,6 +27,7 @@ jobs:
 
       mall-admin:
         image: ghcr.io/ceiling20/mall-admin:1.0-SNAPSHOT
+
         ports:
           - 8080:8080
         env:
@@ -35,8 +36,8 @@ jobs:
           spring.datasource.password: 123456
         options: >-
           --health-interval=30s
-          --health-timeout=5s
-          --health-retries=3
+          --health-timeout=10s
+          --health-retries=10
 
     steps:
       - name: Checkout code
