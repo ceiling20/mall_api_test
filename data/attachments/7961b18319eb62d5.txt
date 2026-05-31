@@ -1,0 +1,3 @@
+INFO     test_product:test_product.py:48 开始测试
+INFO     test_product:test_product.py:51 响应码：400
+INFO     test_product:test_product.py:52 响应内容:{"code":401,"message":"暂未登录或token已经过期","data":"Full authentication is required to access this resource"}

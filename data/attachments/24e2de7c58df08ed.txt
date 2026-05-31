@@ -1,0 +1,3 @@
+INFO     test_brand:test_brand.py:46 开始测试
+INFO     test_brand:test_brand.py:49 响应码：200
+INFO     test_brand:test_brand.py:50 响应内容:{"code":200,"message":"操作成功","data":{"id":1,"name":"万和","firstLetter":"W","sort":0,"factoryStatus":1,"showStatus":1,"productCount":100,"productCommentCount":100,"logo":"http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20200607/5b07ca8aN4e127d2f.jpg","bigPic":"http://img13.360buyimg.com/cms/jfs/t1/121860/35/2430/187800/5ec4e294E22f3ffcc/1e233b65b94ba192.jpg","brandStory":"万和成立于1993年8月，总部位于广东顺德国家级高新技术开发区内，是国内生产规模最大的燃气具专业制造企业，也是中国燃气具发展战略的首倡者和推动者、中国五金制品协会燃气用具分会第三届理事长单位。"}}

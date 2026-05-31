@@ -1,0 +1,3 @@
+INFO     test_brand:test_brand.py:81 开始测试：
+INFO     test_brand:test_brand.py:106 创建品牌响应: {"code":404,"message":"name不能为空","data":null}
+INFO     test_brand:test_brand.py:117 已删除测试品牌 name=cre_1780209632

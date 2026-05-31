@@ -1,0 +1,3 @@
+INFO     test_brand:test_brand.py:46 开始测试
+INFO     test_brand:test_brand.py:49 响应码：200
+INFO     test_brand:test_brand.py:50 响应内容:{"code":200,"message":"操作成功","data":null}
