@@ -57,12 +57,24 @@ jobs:
             -e spring.datasource.username=root \
             -e spring.datasource.password=123456 \
             ghcr.io/ceiling20/mall-admin:1.0-SNAPSHOT
+          sleep 30
+
+      - name: Check mall-admin logs
+        run: docker logs mall-admin
 
       - name: Wait for mall-admin
         run: |
-          while ! curl -s -f http://localhost:8080/actuator/health; do
-            sleep 5
+          for i in $(seq 1 30); do
+            if curl -s -f http://localhost:8080/actuator/health; then
+              echo "mall-admin is ready"
+              exit 0
+            fi
+            echo "[$i/30] Waiting... $(docker inspect mall-admin --format='{{.State.Health.Status}}' 2>/dev/null)"
+            sleep 10
           done
+          echo "FAILED. Full logs:"
+          docker logs mall-admin
+          exit 1
 
       - name: Run tests
         run: pytest testcases/ -v
