@@ -59,8 +59,8 @@
     {
       "body": {
         "name": "测试商品",
-        "price": "100",
-        "stock": "100"
+        "price": 100,
+        "stock": 100
       },
       "expected": {
         "http_status": 200,
@@ -73,8 +73,8 @@
     {
       "body": {
         "name": " ",
-        "price": "100",
-        "stock": "100"
+        "price": 100,
+        "stock": 100
       },
       "expected": {
         "http_status": 200,
@@ -87,8 +87,8 @@
     {
       "body": {
         "name": null,
-        "price": "100",
-        "stock": "100"
+        "price": 100,
+        "stock": 100
       },
       "expected": {
         "http_status": 500,
@@ -101,8 +101,8 @@
     },
     {
       "body": {
-        "price": "100",
-        "stock": "100"
+        "price": 100,
+        "stock": 100
       },
       "expected": {
         "http_status": 500,
@@ -117,7 +117,7 @@
       "body": {
         "name": "测试商品",
         "price": "asdasd",
-        "stock": "100"
+        "stock": 100
       },
       "expected": {
         "http_status": 400,
