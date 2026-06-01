@@ -1,0 +1,7 @@
+INFO     test_order:test_order.py:44 开始测试
+INFO     test_order:test_order.py:55 创建完成：{"code":200,"message":"操作成功","data":1}
+INFO     test_order:test_order.py:62 购物车id为115
+INFO     test_order:test_order.py:77 {"code":200,"message":"操作成功","data":1}
+INFO     test_order:test_order.py:83 获取完成，收获地址id为7
+INFO     test_order:test_order.py:94 [{'orderId': 77, 'orderSn': '2026060101null000001', 'productId': 26, 'productPrice': 3788.0, 'productQuantity': 1, 'productSkuId': 110, 'promotionName': '单品促销', 'promotionAmount': 89.0, 'couponAmount': 0, 'integrationAmount': 0, 'realAmount': 3699.0, 'giftIntegration': 3788, 'giftGrowth': 3788}]
+INFO     test_order:test_order.py:100 测试完成
