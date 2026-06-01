@@ -96,5 +96,5 @@ def test_create_order(portal_client, portal_base_url):
         order_detail = portal_client.get(f"{portal_base_url}/order/detail/{order_data['orderItemList'][0]['orderId']}")
         assert order_detail.status_code == 200
         detail_o_data = order_detail.json()["data"]
-        assert order_detail["code"] == 200
+        assert order_detail.json()["code"] == 200
         logger.info("测试完成")
