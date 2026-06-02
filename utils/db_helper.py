@@ -40,3 +40,10 @@ def sql_delete_brand_by_name(brand_name: str, conn):
     with conn.cursor() as cursor:
         cursor.execute("DELETE FROM pms_brand WHERE name = %s", (brand_name,))
         conn.commit()
+def sql_clear_order_test(order_id,cart_id,address_id,conn):
+    with conn.cursor() as cursor:
+        cursor.execute("DELETE FROM oms_cart_item WHERE id = %s",(cart_id,))
+        cursor.execute("DELETE FROM ums_member_receive_address WHERE id = %s",(address_id,))
+        cursor.execute("DELETE FROM oms_order_item WHERE order_id = %s",(order_id,))
+        cursor.execute("DELETE FROM oms_order WHERE id = %s",(order_id,))
+        conn.commit()

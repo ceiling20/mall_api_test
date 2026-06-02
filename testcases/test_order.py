@@ -1,6 +1,6 @@
 import allure
-import pytest
 from utils.logger import get_logger
+from utils.db_helper import sql_clear_order_test
 
 logger = get_logger(__name__)
 
@@ -39,12 +39,13 @@ def test_portal_login(portal_token):
 @allure.feature("订单管理")
 @allure.story("创建订单")
 @allure.severity(allure.severity_level.NORMAL)
-def test_create_order(portal_client, portal_base_url):
+def test_create_order(portal_client, portal_base_url,db_conn):
     with allure.step("发送post请求把商品加入购物车，验证返回值为预期"):
         logger.info("开始测试")
         SKUID = 110
+        PId = 26
         cart_payload = {
-            "productId": 26,
+            "productId": PId,
             "productSkuId": SKUID,
             "quantity": 1
         }
@@ -93,8 +94,19 @@ def test_create_order(portal_client, portal_base_url):
         assert order_response.status_code == 200
         logger.info(f"{order_data['orderItemList']}")
     with allure.step("发送post请求查询订单详情，并进行数据库断言"):
-        order_detail = portal_client.get(f"{portal_base_url}/order/detail/{order_data['orderItemList'][0]['orderId']}")
+        order_id = order_data['orderItemList'][0]['orderId']
+        order_detail = portal_client.get(f"{portal_base_url}/order/detail/{order_id}")
         assert order_detail.status_code == 200
         detail_o_data = order_detail.json()["data"]
         assert order_detail.json()["code"] == 200
+        with allure.step("用get请求返回的order数据断言，get查数据是进库，所以就是数据库断言"):
+            assert detail_o_data
+        logger.info(f"{detail_o_data}")
+        assert order_data["orderItemList"][0]["productId"] == detail_o_data["orderItemList"][0]["productId"]
+        assert order_data["orderItemList"][0]["productSkuId"] == detail_o_data["orderItemList"][0]["productSkuId"]
+        assert order_data["order"]["payAmount"] == detail_o_data["payAmount"]
+        assert order_data["order"]["totalAmount"] == detail_o_data["totalAmount"]
+    with allure.step("测试清理:"):
+        sql_clear_order_test(order_id,cart_id,address_id,db_conn)
+        logger.info("清理完成")
         logger.info("测试完成")
