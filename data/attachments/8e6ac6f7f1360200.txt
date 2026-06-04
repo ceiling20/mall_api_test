@@ -1,0 +1,9 @@
+INFO     test_order:test_order.py:46 开始测试
+INFO     test_order:test_order.py:58 创建完成：{"code":200,"message":"操作成功","data":1}
+INFO     test_order:test_order.py:65 购物车id为115
+INFO     test_order:test_order.py:80 {"code":200,"message":"操作成功","data":1}
+INFO     test_order:test_order.py:85 获取完成，收获地址id为7
+INFO     test_order:test_order.py:96 [{'orderId': 77, 'orderSn': '2026060401null000001', 'productId': 26, 'productPrice': 3788.0, 'productQuantity': 1, 'productSkuId': 110, 'promotionName': '单品促销', 'promotionAmount': 89.0, 'couponAmount': 0, 'integrationAmount': 0, 'realAmount': 3699.0, 'giftIntegration': 3788, 'giftGrowth': 3788}]
+INFO     test_order:test_order.py:105 {'id': 77, 'memberId': 1, 'orderSn': '2026060401null000001', 'createTime': '2026-06-04T09:53:56.000+00:00', 'memberUsername': 'test', 'totalAmount': 3788.0, 'payAmount': 3699.0, 'freightAmount': 0.0, 'promotionAmount': 89.0, 'integrationAmount': 0.0, 'couponAmount': 0.0, 'discountAmount': 0.0, 'sourceType': 1, 'status': 0, 'orderType': 0, 'autoConfirmDay': 15, 'integration': 3788, 'growth': 3788, 'promotionInfo': '单品促销', 'receiverName': 'ceiling', 'receiverPhone': '15982406733', 'receiverProvince': '广西省', 'receiverCity': '柳州', 'receiverRegion': '柳南区', 'receiverDetailAddress': '柳东街道', 'confirmStatus': 0, 'deleteStatus': 0, 'orderItemList': [{'id': 115, 'orderId': 77, 'orderSn': '2026060401null000001', 'productId': 26, 'productPrice': 3788.0, 'productQuantity': 1, 'productSkuId': 110, 'promotionName': '单品促销', 'promotionAmount': 89.0, 'couponAmount': 0.0, 'integrationAmount': 0.0, 'realAmount': 3699.0, 'giftIntegration': 0, 'giftGrowth': 0}]}
+INFO     test_order:test_order.py:112 清理完成
+INFO     test_order:test_order.py:113 测试完成
