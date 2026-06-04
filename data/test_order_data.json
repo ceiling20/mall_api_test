@@ -1,0 +1,93 @@
+{
+  "create_order": [
+    {
+      "memberReceiveAddressId": 19,
+      "cartIds": [
+        null
+      ],
+      "description": "购物车id为null",
+      "expected": {
+        "http_status": 500,
+        "business_code": 401
+      }
+    },
+    {
+      "memberReceiveAddressId": 19,
+      "cartIds": [
+        0
+      ],
+      "description": "购物车id不存在",
+      "expected": {
+        "http_status": 500,
+        "business_code": 401
+      }
+    },
+    {
+      "memberReceiveAddressId": 19,
+      "cartIds": [
+
+      ],
+      "description": "购物车id为空",
+      "expected": {
+        "http_status": 500,
+        "business_code": 401
+      }
+    },
+    {
+      "memberReceiveAddressId": 19,
+      "cartIds": [
+        "asdasda"
+      ],
+      "description": "购物车id为字符串",
+      "expected": {
+        "http_status": 400,
+        "business_code": 401
+      }
+    },
+    {
+      "memberReceiveAddressId": 19,
+      "cartIds": [
+        99999999
+      ],
+      "description": "购物车id为9999999",
+      "expected": {
+        "http_status": 500,
+        "business_code": 401
+      }
+    },
+    {
+      "memberReceiveAddressId": 0,
+      "cartIds": [
+        1
+      ],
+      "description": "地址id不存在",
+      "expected": {
+        "http_status": 500,
+        "business_code": 401
+      }
+    },
+    {
+      "memberReceiveAddressId": "asdas",
+      "cartIds": [
+        1
+      ],
+      "description": "地址id为字符串",
+      "expected": {
+        "http_status": 400,
+        "business_code": 401
+      }
+    },
+    {
+      "memberReceiveAddressId": null,
+      "cartIds": [
+        1
+      ],
+      "description": "地址id为null",
+      "expected": {
+        "http_status": 200,
+        "business_code": 500,
+         "message" : "请选择收货地址！"
+      }
+    }
+  ]
+}
