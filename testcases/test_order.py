@@ -1,4 +1,6 @@
 import allure
+import json
+import pytest
 from utils.logger import get_logger
 from utils.db_helper import sql_clear_order_test
 
@@ -23,9 +25,9 @@ def test_get_order(admin_base_url, auth_client):
 @allure.severity(allure.severity_level.NORMAL)
 def test_get_order_list(auth_client, admin_base_url):
     with allure.step("发送get请求查询订单列表，验证返回码为预期值"):
-        GL_response = auth_client.get(f"{admin_base_url}/order/list", params={"pageNum": 4, "pageSize": 5})
-        data = GL_response.json()
-        assert GL_response.status_code == 200
+        ol_response = auth_client.get(f"{admin_base_url}/order/list", params={"pageNum": 4, "pageSize": 5})
+        data = ol_response.json()
+        assert ol_response.status_code == 200
         assert "list" in data["data"]
         logger.info(f"{data['data']}")
 
@@ -43,9 +45,9 @@ def test_create_order(portal_client, portal_base_url,db_conn):
     with allure.step("发送post请求把商品加入购物车，验证返回值为预期"):
         logger.info("开始测试")
         SKUID = 110
-        PId = 26
+        pId = 26
         cart_payload = {
-            "productId": PId,
+            "productId": pId,
             "productSkuId": SKUID,
             "quantity": 1
         }
@@ -60,16 +62,16 @@ def test_create_order(portal_client, portal_base_url,db_conn):
         list_data = list_response.json()["data"]
         cart_id = next((cart["id"] for cart in list_data if SKUID == cart["productSkuId"]), None)
         assert cart_id is not None, f"未找到skuId：{SKUID}的购物车单"
-    logger.info(f"购物车id为{cart_id}")
+        logger.info(f"购物车id为{cart_id}")
     with allure.step("发送post请求添加收货地址，验证返回码为预期"):
-        detailAddress = "柳东街道"
+        detailaddress = "柳东街道"
         address_payload = {
             "name": "ceiling",
             "phoneNumber": "15982406733",
             "province": "广西省",
             "city": "柳州",
             "region": "柳南区",
-            "detailAddress": detailAddress
+            "detailAddress": detailaddress
         }
         address_response = portal_client.post(f"{portal_base_url}/member/address/add", json=address_payload)
         assert address_response.status_code == 200
@@ -79,8 +81,7 @@ def test_create_order(portal_client, portal_base_url,db_conn):
     with allure.step("发送get请求获取收获地址列表，获取创建地址id"):
         a_list = portal_client.get(f"{portal_base_url}/member/address/list")
         a_list_data = a_list.json()["data"]
-        address_id = next((address["id"] for address in a_list_data if detailAddress == address["detailAddress"]),
-                              None)
+        address_id = next((address["id"] for address in a_list_data if detailaddress == address["detailAddress"]),None)
         logger.info(f"获取完成，收获地址id为{address_id}")
     with allure.step("正式创建订单，发送post请求，验证返回值为预期"):
         order_payload = {
@@ -99,8 +100,8 @@ def test_create_order(portal_client, portal_base_url,db_conn):
         assert order_detail.status_code == 200
         detail_o_data = order_detail.json()["data"]
         assert order_detail.json()["code"] == 200
-        with allure.step("用get请求返回的order数据断言，get查数据是进库，所以就是数据库断言"):
-            assert detail_o_data
+    with allure.step("用get请求返回的order数据断言，get查数据是进库，所以就是数据库断言"):
+        assert detail_o_data
         logger.info(f"{detail_o_data}")
         assert order_data["orderItemList"][0]["productId"] == detail_o_data["orderItemList"][0]["productId"]
         assert order_data["orderItemList"][0]["productSkuId"] == detail_o_data["orderItemList"][0]["productSkuId"]
@@ -110,3 +111,39 @@ def test_create_order(portal_client, portal_base_url,db_conn):
         sql_clear_order_test(order_id,cart_id,address_id,db_conn)
         logger.info("清理完成")
         logger.info("测试完成")
+@allure.feature("订单管理")
+@allure.story("订单创建")
+@allure.severity(allure.severity_level.NORMAL)
+def test_create_order_without_login(unauth_client,portal_base_url):
+    with allure.step("发送post请求没有登录的状态创建订单，验证预期返回值"):
+        payload = {
+            "memberReceiveAddressId": 19,
+            "cartIds" : [
+                1
+            ]
+        }
+        response = unauth_client.post(f"{portal_base_url}/order/generateOrder",json=payload)
+        assert response.status_code == 200
+        data = response.json()
+        assert data["code"] == 401
+with open("data/test_order_data.json","r",encoding="utf-8") as f:
+    order_except_c_data = json.load(f)["create_order"]
+@allure.feature("订单管理")
+@allure.story("订单创建")
+@allure.severity(allure.severity_level.NORMAL)
+@pytest.mark.parametrize("case",order_except_c_data,ids=[f"test_cre{c["description"]}"for c in order_except_c_data])
+def test_create_order_except(portal_client,portal_base_url,case):
+    with allure.step("发送post请求异常流程，验证预期返回值"):
+        expected = case["expected"]
+        payload = {
+            "memberReceiveAddressId": case["memberReceiveAddressId"],
+            "cartIds": case["cartIds"]
+        }
+        response = portal_client.post(f"{portal_base_url}/order/generateOrder",json=payload)
+        assert response.status_code == expected["http_status"]
+        data = response.json()
+        assert data["code"] == expected["business_code"]
+        if "message" in expected:
+            assert data["message"] == expected["message"]
+
+

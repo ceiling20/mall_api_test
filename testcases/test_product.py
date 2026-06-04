@@ -48,18 +48,18 @@ def test_get_product(auth_client, admin_base_url, case):
     logger.info("开始测试")
     with allure.step("发送get请求查询商品，验证响应码是否正确"):
         response = auth_client.get(f"{admin_base_url}/product/updateInfo/{case['id']}")
-    logger.info(f"响应码：{response.status_code}")
-    logger.info(f"响应内容:{response.text}")
-    get_data = response.json()
-    expected = case["expected"]
-    assert response.status_code == case["expected"]["http_status"]
-    if "business_code" in expected:
-        assert get_data["code"] == expected["business_code"]
-    if "data" in expected:
-        assert get_data["data"] == expected["data"]
-    if "message" in expected:
-        assert get_data["message"] == expected["message"]
-    product = get_data["data"]
+        logger.info(f"响应码：{response.status_code}")
+        logger.info(f"响应内容:{response.text}")
+        get_data = response.json()
+        expected = case["expected"]
+        assert response.status_code == case["expected"]["http_status"]
+        if "business_code" in expected:
+            assert get_data["code"] == expected["business_code"]
+        if "data" in expected:
+            assert get_data["data"] == expected["data"]
+        if "message" in expected:
+            assert get_data["message"] == expected["message"]
+        product = get_data["data"]
     with allure.step("预测数据是否为空，有数据的话，测试响应体主要参数是否存在"):
         if expected["expected_normal"]:
             assert product is not None

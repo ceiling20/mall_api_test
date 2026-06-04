@@ -41,7 +41,7 @@ with open("data/test_brand_data.json", "r", encoding="utf-8") as s:
 @allure.feature("品牌管理")
 @allure.story("查询品牌")
 @allure.severity(allure.severity_level.NORMAL)
-@pytest.mark.parametrize("case", get_brand_data_list, ids=[f"test_{c['id']}" for c in get_brand_data_list])
+@pytest.mark.parametrize("case", get_brand_data_list, ids=[f"test_{c['id']}"for c in get_brand_data_list])
 def test_get_brand(auth_client, admin_base_url, case):
     logger.info("开始测试")
     with allure.step("发送get请求查询品牌，验证响应码是否正确"):
