@@ -131,7 +131,7 @@ with open("data/test_order_data.json","r",encoding="utf-8") as f:
 @allure.feature("订单管理")
 @allure.story("订单创建")
 @allure.severity(allure.severity_level.NORMAL)
-@pytest.mark.parametrize("case",order_except_c_data,ids=[f"test_cre{c["description"]}"for c in order_except_c_data])
+@pytest.mark.parametrize("case",order_except_c_data,ids=[f'test_cre{c["description"]}'for c in order_except_c_data])
 def test_create_order_except(portal_client,portal_base_url,case):
     with allure.step("发送post请求异常流程，验证预期返回值"):
         expected = case["expected"]
