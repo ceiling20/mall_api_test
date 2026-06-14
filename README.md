@@ -1,4 +1,4 @@
-# mall-api-test 商场接口自动化测试
+# mall-api-test 电商接口自动化测试
 [![Allure Report](https://img.shields.io/badge/Allure-Report-blue)](https://ceiling20.github.io/mall_api_test/)
 [![CI](https://github.com/ceiling20/mall_api_test/actions/workflows/ci.yml/badge.svg)](https://github.com/ceiling20/mall_api_test/actions/workflows/ci.yml)
 
@@ -11,6 +11,13 @@
 - Allure（测试报告）
 - Docker Compose（本地环境）
 - GitHub Actions（CI/CD）
+
+## 项目亮点
+
+- **数据驱动设计**：测试数据与逻辑分离，JSON管理，新增场景无需改代码
+- **数据库断言**：接口返回"成功"不代表数据落库正确，用pymysql直接查库验证
+- **环境一致性**：Docker Compose一键启动，避免"在我电脑上能跑"
+- **CI/CD完整链路**：push即触发，自动跑测试→生成报告→部署GitHub Pages
 
 ## 项目结构
 
@@ -30,9 +37,9 @@ mall_api_test/                 # 项目根目录
 │   └── mall.sql               # 商场数据库完整建表 + 初始数据
 ├── testcases/                 # 测试用例目录
 │   ├── __init__.py
-│   ├── test_brand.py          # 品牌管理（增删改查、参数校验）
-│   ├── test_product.py        # 商品管理（CRUD + 数据驱动）
-│   └── test_order.py          # 订单流程（登录 → 下单完整链路）
+│   ├── test_brand.py          # 品牌管理（增删改查、参数校验） 
+│   ├── test_product.py        # 商品管理（CRUD + 数据驱动） 
+│   └── test_order.py          # 订单流程（登录 → 下单完整链路） 
 ├── utils/                     # 工具函数目录
 │   ├── __init__.py
 │   ├── config.py              # 配置管理（BASE_URL_ADMIN, BASE_URL_PORTAL, DB 连接）
@@ -111,6 +118,13 @@ allure serve allure-results
 
 品牌和商品用例均采用 `@pytest.mark.parametrize` + JSON 数据文件实现数据与逻辑分离。
 
+## 测试覆盖
+
+- **品牌模块**：CRUD 全覆盖，含参数异常、未登录、资源不存在等场景
+- **商品模块**：40+ 条参数化用例，覆盖正常/异常/边界值
+- **订单模块**：完整支付链路（登录 → 添加购物车 → 生成订单 → 数据库断言）
+- **发现缺陷**：定位到 MyBatis 层 INSERT 语句缺失字段的 bug
+
 ```bash
 # 运行所有参数化用例
 pytest testcases/test_brand.py -v
@@ -125,6 +139,12 @@ pytest testcases/test_brand.py -v
 - `utils/db_helper.py` 提供 `get_mysql_conn()` 直连数据库
 - 验证 GET 接口返回的字段与 `mall.sql` 初始数据一致
 - 验证 POST/PUT 接口写入的数据落库正确
+
+### 源码级Bug定位案例
+
+下单接口`giftIntegration`字段计算值**3788**，但写入数据库后变为**0**。  
+追踪链路：接口返回 → 服务层计算 → MyBatis XML映射 → 发现INSERT语句**漏了两列**，导致数据丢失。  
+给出修复方案并验证，最终数据一致。
 
 ## CI/CD
 
@@ -143,5 +163,16 @@ pytest testcases/test_brand.py -v
 `utils/logger.py` 同时输出到控制台和 `logs/test.log`，断言失败时可直接查日志定位。
 
 ---
+
+## 辅助工具
+
+- 使用 **Cursor + DeepSeek** 辅助生成边界值数据、分析 Allure 失败日志
+- 探索 **Skills** 和 **MCP** 概念，提升自动化脚本开发效率
+
+## 注意事项
+
+- 本地运行需确保 mall-admin 和 mall-portal 已启动，且数据库已导入 mall.sql
+- CI 中首次运行会拉取 GHCR 镜像，耗时较长，后续有缓存
+- 订单生成依赖购物车和地址，请先手动添加测试数据或通过接口准备
 
 **备注**：本地调试如遇中文校验消息不一致，检查 IDE 和终端的系统语言设置。
